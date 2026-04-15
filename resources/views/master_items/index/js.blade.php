@@ -18,7 +18,15 @@
 
     $('.btn-get-data').click(function() {
         getData()
-    })
+    });
+
+    $('.btn-reset-data').click(function() {
+        $('#filter-kode').val('');
+        $('#filter-nama').val('');
+        $('#filter-harga-min').val('');
+        $('#filter-harga-max').val('');
+        getData();
+    });
 
     function getData(){
         
@@ -45,7 +53,7 @@
                     harga_jual = Math.round(harga_jual)
                     var kode = item.kode;
 
-                    var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`
+                    var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary btn-sm">View</a>`
 
                     $.each(item, function(obj_name, obj_value) {
                         if (obj_name == 'laba') return false;

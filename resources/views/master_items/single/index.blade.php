@@ -13,6 +13,11 @@
                 <div class="card-body">
                     <table>
                         <tr>
+                            <th>Foto</th>
+                            <td>:</td>
+                            <td><img src="{{ asset('medify/' . $data->foto) }}" alt="" width="100"></td>
+                        </tr>
+                        <tr>
                             <th>Nama</th>
                             <td>:</td>
                             <td>{{$data->nama}}</td>

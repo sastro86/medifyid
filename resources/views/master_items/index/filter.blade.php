@@ -26,6 +26,7 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-primary mt-1 btn-get-data">Filter</button>
+    <button class="btn btn-primary btn-sm mt-1 btn-get-data">Filter</button>
+    <button class="btn btn-info btn-sm mt-1 btn-reset-data">Reset</button>
     <span id="loading-filter" style="display: none;">Loading...</span>
 </div>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MasterItemsController extends Controller
 {
@@ -23,7 +25,8 @@ class MasterItemsController extends Controller
 
         if (!empty($kode)) $data_search = $data_search->where('kode', $kode);
         if (!empty($nama)) $data_search = $data_search->where('nama', 'LIKE', '%' . $nama . '%');
-        if (!empty($hargamin)) $data_search = $data_search->where('harga_beli', '>=', $hargamin)->where('harga_beli', '<=', $hargamax);
+        if (!empty($hargamin)) $data_search = $data_search->where('harga_beli', '>=', $hargamin);
+        if (!empty($hargamax)) $data_search = $data_search->where('harga_beli', '<=', $hargamax);
 
         $data_search = $data_search->select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier')->orderBy('id')->get();
 
@@ -65,6 +68,9 @@ class MasterItemsController extends Controller
             $kode = $data_item->kode;
         }
 
+        $foto = $request->file('foto');
+        $foto_nama = Str::slug($request->nama) . "." . $foto->extension();
+        $data_item->foto = $foto_nama;
         $data_item->nama = $request->nama;
         $data_item->harga_beli = $request->harga_beli;
         $data_item->laba = $request->laba;
@@ -72,6 +78,9 @@ class MasterItemsController extends Controller
         $data_item->supplier = $request->supplier;
         $data_item->jenis = $request->jenis;
         $data_item->save();
+
+        if (!empty($foto))
+                $foto->move('medify/', $foto_nama);
 
         return redirect('master-items');
     }
@@ -111,5 +120,15 @@ class MasterItemsController extends Controller
         $array = ['Obat','Alkes','Matkes','Umum','ATK'];
         $random = rand(0,4);
         return $array[$random];
+    }
+
+    public function printAll()
+    {
+        $data_search = MasterItem::query();
+        $data_search = $data_search->select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier')->orderBy('id')->get();
+        $data_search = (empty($data_search) ? [] : $data_search->toArray());
+
+        $pdf = Pdf::loadView('master_items.index.pdf', $data_search);
+        return $pdf->download('invoice.pdf');
     }
 }
