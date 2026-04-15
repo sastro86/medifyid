@@ -130,11 +130,20 @@ class MasterItemsController extends Controller
             with('category:id,kode,nama')->
             orderBy('nama')->get();
         $data_search = (empty($data_search) ? [] : $data_search->toArray());
-        //dd($data_search);
 
         $pdf = Pdf::loadView('master_items.index.pdf', [
             'data' => $data_search
         ]);
         return $pdf->download('master_items.pdf');
+    }
+
+    public function printExcel() {
+        $data_search = MasterItem::query();
+        $data_search = $data_search->
+            select('kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'category')->
+            with('category:id,kode,nama')->
+            orderBy('nama')->get();
+        $data_search = (empty($data_search) ? [] : $data_search->toArray());
+        dd($data_search);
     }
 }
